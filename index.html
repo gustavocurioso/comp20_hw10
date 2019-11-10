@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>API Fun!</title>
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Cardo:400,700|Oswald" rel="stylesheet">
+        <script type="text/javascript">
+            function getLatestPrice() {
+                request = new XMLHttpRequest();
+                console.log("1 - request object created");
+                request.open("GET", "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=BRKA&apikey=C3B5KQGL6P4QTUKW&datatype=json", true);
+                console.log("2 - opened request file");
+                request.onreadystatechange = function() {
+    				console.log("3 - readystatechange event fired.");
+    				if (request.readyState == 4 && request.status == 200) {
+    					result = request.responseText;
+    					stock = JSON.parse(result);
+                        price = stock["Global Quote"]["05. price"];
+    					document.getElementById("data").innerHTML ="Latest Price for Berkshire Hathaway Inc. Class A Stock: $" + price;
+    				}
+    				else if (request.readyState == 4 && request.status != 200) {
+    					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+    				}
+    				else if (request.readyState == 3) {
+    					document.getElementById("data").innerHTML = "Too soon!  Try again";
+    				}
+                }
+                request.send();
+                console.log("4 - Request sent");
+            }
+        </script>
+    </head>
+    <body onload="getLatestPrice()">
+        <h1><strong>Latest Stock Price</strong></h1>
+    	<div id="data">Loading...</div>
+        <br /><br />
+        <div id="content">
+            The API I selected was Alpha Advantage, which provides free Stock
+            Market historical and current price data.<br /><br />
+            I found the API on <a href="https://github.com/public-apis/public-apis" target="_blank">this</a>
+            Github repository.<br /><br />
+            The options I used for the API request were:<br />
+            1. The function for the type of stock data I wanted (GLOBAL_QUOTE).<br />
+            2. The stock symbol for the stock I wanted (BRKA).<br />
+            3. The datatype I wanted (json).<br />
+            4. My API key.
+        </div>
+    </body>
+</html>
